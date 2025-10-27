@@ -5,7 +5,6 @@ import random
 from sentence_transformers import SentenceTransformer, InputExample, losses
 from torch.utils.data import DataLoader
 
-# 1. Download and load data
 url = "https://raw.githubusercontent.com/unimorph/eng/master/eng"
 response = requests.get(url)
 lines = response.text.strip().split('\n')
@@ -20,16 +19,15 @@ for line in lines:
 df = pd.DataFrame(data, columns=['lemma', 'inflected_form', 'tags'])
 print(f"Loaded {len(df)} examples")
 
-# 2. Create training examples
 train_examples = []
 
-# Positive pairs: lemma + inflection
+# pos pairs
 for _, row in df.iterrows():
     train_examples.append(
         InputExample(texts=[row['lemma'], row['inflected_form']], label=1.0)
     )
 
-# Negative pairs: random unrelated forms
+# neg pairs
 num_negatives = min(len(df), 5000)  # Limit negatives for speed
 for _ in range(num_negatives):
     i, j = random.sample(range(len(df)), 2)
@@ -41,10 +39,10 @@ for _ in range(num_negatives):
 random.shuffle(train_examples)
 print(f"Created {len(train_examples)} training examples")
 
-# Persist the generated training examples for reproducibility
+# persistence
 os.makedirs("checkpoints", exist_ok=True)
 examples_csv_path = os.path.join("checkpoints", "train_examples.csv")
-# Save a simple CSV with columns (text1, text2, label)
+
 with open(examples_csv_path, "w", encoding="utf-8") as f:
     f.write("text1\ttext2\tlabel\n")
     for ex in train_examples:
@@ -56,11 +54,21 @@ model = SentenceTransformer('all-MiniLM-L6-v2')
 train_dataloader = DataLoader(train_examples, shuffle=True, batch_size=16)
 train_loss = losses.CosineSimilarityLoss(model)
 
+checkpoint_dir = os.path.join("checkpoints", "model_checkpoints")
+os.makedirs(checkpoint_dir, exist_ok=True)
+
+checkpoint_save_steps = 1000
+checkpoint_save_total_limit = 5  # keep last N checkpoints
+
 model.fit(
     train_objectives=[(train_dataloader, train_loss)],
     epochs=4,
     warmup_steps=100,
-    output_path='./output/unimorph-english-model'
+    output_path='./output/unimorph-english-model',
+    checkpoint_path=checkpoint_dir,
+    checkpoint_save_steps=checkpoint_save_steps,
+    checkpoint_save_total_limit=checkpoint_save_total_limit
 )
 
 print("Training complete! Model saved to ./output/unimorph-english-model")
+print(f"Checkpoints saved under {checkpoint_dir}")
