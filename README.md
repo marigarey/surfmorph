@@ -1,25 +1,12 @@
 # surfmorph
 For my Advance Morphology Fall 2025 | Paper-UnPaper Assignment
 
-## Proposal
-Compare different models's ability to predict the part of speech for English and possibly a low resource language. additionally, there will be comparisons between different Libraries
+## Proposal One
+Using the Unimorph English Dataset, train different models and see whether Sentence Transformer can better split a word by its morphemes.
 
 ### Libraries
-1. sklearn
-2. tensorflow
-3. pytorch
-4. perpetual boosting
-5. Howso
-6. Natural Language ToolKit
-7. Gensim
-8. SpaCy
-9. HuggingFace Transformers
-
-### Models
-1. Stochastic Gradient Descent
-2. Support Vector Machines
-3. Nearest Neighbors
-4. Gaussian Processes
+1. SentenceTransformer
+2. Torch DataLoader
 
 ## Sources
 * [Dataset from UniMorph](https://unimorph.github.io/)
@@ -32,3 +19,11 @@ Compare different models's ability to predict the part of speech for English and
 morphology tells us what is the possible words
 
 https://arxiv.org/abs/2404.02408
+
+
+## Proposal Two
+Created my own CNN to detect and predict parts of speech of words!
+
+### Notes
+* All of this is located in the jupiter notebook (nn.ipynb)
+* I am still playing around with this section and it is more fun to me lol
