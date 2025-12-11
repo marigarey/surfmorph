@@ -1,9 +1,0 @@
-sentence-transformers
-pandas
-requests
-
-# Optional but helpful for some setups:
-# - add faiss-cpu if you plan to use vector search locally
-# - add scikit-learn if you extend evaluation code
-# faiss-cpu
-# scikit-learn
